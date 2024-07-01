@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Table Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #fff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #555;
+        }
+        td {
+            background-color: #222;
+        }
+        td.blackout {
+            background-color: #000;
+        }
+        input {
+            width: 100%;
+            background-color: #222;
+            border: none;
+            color: #fff;
+            text-align: center;
+        }
+        input:focus {
+            outline: none;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>N</th>
+                <th>1</th>
+                <th>2</th>
+                <th>3</th>
+                <th>4</th>
+                <th>5</th>
+                <th>6</th>
+                <th>7</th>
+                <th>8</th>
+                <th>9</th>
+                <th>10</th>
+                <th>11</th>
+                <th>12</th>
+                <th>13</th>
+                <th>14</th>
+                <th>15</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+       
+        </tbody>
+    </table>
+    <button onclick="calculateTotal()">Calculate Grade</button>
+    <div id="result"></div>
+    <script>
+        const tableData = [
+            ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"],
+            ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"],
+            ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"],
+            ["0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0"],
+        ];
+
+        const rowHeaders = ["შეფასება", "მაქს.შეფასება", "ხვ.წონა", "შედეგი"];
+
+        const tbody = document.getElementById("table-body");
+
+        rowHeaders.forEach((header, rowIndex) => {
+            const row = document.createElement("tr");
+            const headerCell = document.createElement("td");
+            headerCell.textContent = header;
+            row.appendChild(headerCell);
+
+            tableData[rowIndex].forEach((cellData, cellIndex) => {
+                const cell = document.createElement("td");
+                if (cellData === "ბლოკი") {
+                    cell.classList.add("blackout");
+                } else {
+                    const input = document.createElement("input");
+                    input.type = "number";
+                    input.min = 0;
+                    input.max = 100;
+                    input.value = cellData;
+                    input.addEventListener("change", (event) => {
+                        let value = parseInt(event.target.value);
+                        if (value > 100) {
+                            alert("გადამეტებულია ქულა! მაქსიმალური ქულა არის 100.");
+                            value = 100;
+                        }
+                        event.target.value = value;
+                        console.log(`Row ${rowIndex + 1}, Cell ${cellIndex + 1} changed to: ${value}`);
+                    });
+                    cell.appendChild(input);
+                }
+                row.appendChild(cell);
+            });
+
+            tbody.appendChild(row);
+        });
+
+        function calculateTotal() {
+            let total = 0;
+            const inputs = document.querySelectorAll("input");
+            inputs.forEach(input => {
+                total += parseInt(input.value) || 0;
+            });
+            const resultDiv = document.getElementById("result");
+
+            let grade = "";
+            let color = "";
+            if (total >= 91 && total <= 100) {
+                grade = "A";
+                color = "green";
+            } else if (total >= 81 && total <= 90) {
+                grade = "B";
+                color = "blue";
+            } else if (total >= 71 && total <= 80) {
+                grade = "C";
+                color = "yellow";
+            } else if (total >= 61 && total <= 70) {
+                grade = "D";
+                color = "orange";
+            } else if (total >= 51 && total <= 60) {
+                grade = "E";
+                color = "purple";
+            } else {
+                grade = "F";
+                color = "red";
+            }
+
+            resultDiv.textContent = `Total: ${total}, Grade: ${grade}`;
+            resultDiv.style.color = color;
+        }
+    </script>
+</body>
+</html>
